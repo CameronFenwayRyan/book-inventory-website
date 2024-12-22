@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 
 const Book = ({ book, onDelete }) => {
-  const [rating, setRating] = useState(book.rating || 0);
+  const [rating, setRating] = useState(book.rating || 1);
 
-  const handleRatingChange = (e) => {
-    setRating(e.target.value);
-    book.rating = e.target.value;
+  const handleRatingChange = (newRating) => {
+    console.log(`Star clicked: ${newRating}`);
+    setRating(newRating);
+    book.rating = newRating;
   };
 
   const handleDelete = () => {
@@ -17,16 +18,20 @@ const Book = ({ book, onDelete }) => {
 
   return (
     <div>
-      <h3>{book.title}</h3>
-      <p>{book.author}</p>
+      <h3>Title: {book.title}</h3>
+      <p>Author: {book.author}</p>
       <img src={book.cover ? book.cover.large : ''} alt={book.title} />
-      <select value={rating} onChange={handleRatingChange}>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
+      <div className="star-rating">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            className={star <= rating ? 'star filled' : 'star'}
+            onClick={() => handleRatingChange(star)}
+          >
+            &#9733;
+          </span>
+        ))}
+      </div>
       <button onClick={handleDelete}>Delete</button>
     </div>
   );
