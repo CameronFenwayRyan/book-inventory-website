@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import BookForm from './components/BookForm';
+import BookList from './components/BookList';
 
-function App() {
+const App = () => {
+  const [books, setBooks] = useState([]);
+  const [error, setError] = useState('');
+
+  const handleDeleteBook = (isbn) => {
+    setBooks(books.filter(book => book.isbn !== isbn));
+  };
+
+  useEffect(() => {
+    const storedBooks = JSON.parse(localStorage.getItem('books'));
+    if (storedBooks) {
+      setBooks(storedBooks);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('books', JSON.stringify(books));
+  }, [books]);
+
+  const addBook = (book) => {
+    if (books.some(b => b.isbn === book.isbn)) {
+      setError('ISBN already exists.');
+      return;
+    }
+    setBooks([...books, { ...book, rating: 0 }]);
+    setError('');
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <BookForm addBook={addBook} error={error} />
+      <BookList books={books} onDelete={handleDeleteBook} />
     </div>
   );
-}
+};
 
 export default App;
