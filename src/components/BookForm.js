@@ -1,34 +1,13 @@
 import React, { useState } from "react";
 import SearchCard from "./SearchCard";
-import axios from "axios";
-
-export const getBookDetails = async (query) => {
-  const response = await axios.get(
-    `https://openlibrary.org/search.json?q=${query}`
-  );
-  const data = response.data;
-
-  if (!data || data.docs.length === 0) {
-    throw new Error("Book not found");
-  }
-
-  return data.docs.map((bookData) => ({
-    isbn: bookData.isbn ? bookData.isbn[0] : "Unknown ISBN",
-    title: bookData.title,
-    author: bookData.author_name ? bookData.author_name[0] : "Unknown Author",
-    cover: bookData.cover_i
-      ? {
-          large: `https://covers.openlibrary.org/b/id/${bookData.cover_i}-L.jpg`,
-        }
-      : { large: "default-cover-url.jpg" },
-  }));
-};
+import { getBookDetails } from "../services/openLibraryAPI";
 
 const BookForm = ({ addBook, error, groups }) => {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const resultsPerPage = 15;
+  const [loading, setLoading] = useState(false);
+  const resultsPerPage = 15; // 5 columns * 3 rows
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,19 +15,22 @@ const BookForm = ({ addBook, error, groups }) => {
       alert("Please enter a search query.");
       return;
     }
+    setLoading(true);
     try {
-      const books = await getBookDetails(query);
+      const books = (await getBookDetails(query)) || [];
       setSearchResults(books);
       setQuery("");
       setCurrentPage(1); // Reset to first page on new search
     } catch (err) {
       alert("Failed to fetch book data.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleAddToGroup = (book, groupName) => {
     addBook(book, groupName);
-    setSearchResults([]); // Clear search results after adding to group
+    // Do not clear search results after adding to group
   };
 
   const handlePageChange = (pageNumber) => {
@@ -57,10 +39,9 @@ const BookForm = ({ addBook, error, groups }) => {
 
   const indexOfLastResult = currentPage * resultsPerPage;
   const indexOfFirstResult = indexOfLastResult - resultsPerPage;
-  const currentResults = searchResults.slice(
-    indexOfFirstResult,
-    indexOfLastResult
-  );
+  const currentResults = Array.isArray(searchResults)
+    ? searchResults.slice(indexOfFirstResult, indexOfLastResult)
+    : [];
 
   const renderPageNumbers = () => {
     const pageNumbers = [];
@@ -93,17 +74,24 @@ const BookForm = ({ addBook, error, groups }) => {
         </button>
         {error && <p>{error}</p>}
       </form>
-      <div className="search-results">
-        {currentResults.map((book) => (
-          <SearchCard
-            key={book.isbn}
-            book={book}
-            groups={groups}
-            onAddToGroup={handleAddToGroup}
-          />
-        ))}
-      </div>
-      <div className="pagination">{renderPageNumbers()}</div>
+      {loading ? (
+        <div className="loading-icon">Loading...</div>
+      ) : (
+        <>
+          <div className="search-results">
+            {currentResults.map((book) => (
+              <div className="search-card" key={book.isbn}>
+                <SearchCard
+                  book={book}
+                  groups={groups}
+                  onAddToGroup={handleAddToGroup}
+                />
+              </div>
+            ))}
+          </div>
+          <div className="pagination">{renderPageNumbers()}</div>
+        </>
+      )}
     </div>
   );
 };

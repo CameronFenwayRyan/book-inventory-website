@@ -17,7 +17,9 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("groups", JSON.stringify(groups));
+    if (groups.length > 0) {
+      localStorage.setItem("groups", JSON.stringify(groups));
+    }
   }, [groups]);
 
   const addGroup = (groupName) => {
