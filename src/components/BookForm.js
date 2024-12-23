@@ -80,7 +80,7 @@ const BookForm = ({ addBook, error, groups }) => {
         <>
           <div className="search-results">
             {currentResults.map((book) => (
-              <div className="search-card" key={book.isbn}>
+              <div key={book.isbn}>
                 <SearchCard
                   book={book}
                   groups={groups}

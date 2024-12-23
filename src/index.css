@@ -57,8 +57,7 @@ code {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  box-shadow: -2px 4px 12px rgb(59, 59, 59);
-  border: solid;
+  box-shadow: -5px 4px 20px rgb(0, 0, 0);
   border-color: rgb(179, 179, 179);
   box-sizing: border-box;
 }
@@ -83,6 +82,7 @@ code {
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   font-family: "Arial", sans-serif;
+  box-shadow: -5px 4px 20px rgb(0, 0, 0);
 }
 
 .input-box,
@@ -192,14 +192,16 @@ body::-webkit-scrollbar-thumb {
 .search-card {
   background-color: rgb(36, 36, 36);
   width: 250px;
+  height: 450px;
   padding: 16px;
-  margin: 16px;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  justify-content: space-between;
+  border-color: rgb(179, 179, 179);
+  box-sizing: border-box;
+  box-shadow: -5px 4px 20px rgb(0, 0, 0);
 }
 
 .search-card select {
@@ -241,8 +243,8 @@ body::-webkit-scrollbar-thumb {
 .loading-icon:after {
   content: " ";
   display: block;
-  width: 64px;
-  height: 64px;
+  width: 32px;
+  height: 32px;
   margin: 8px;
   border-radius: 50%;
   border: 6px solid #fff;
