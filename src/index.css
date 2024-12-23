@@ -121,3 +121,106 @@ body::-webkit-scrollbar-thumb {
   border-radius: 6px; /* Rounded corners for the scrollbar thumb */
   border: 3px solid #000; /* Padding around the scrollbar thumb */
 }
+
+.book-group {
+  background-color: rgb(36, 36, 36);
+  width: 250px;
+  padding: 16px;
+  margin: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.group-title {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.group-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 50px;
+  justify-content: center;
+  padding: 25px;
+}
+
+.delete-group-button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.delete-group-button:hover {
+  background-color: #ff1a1a;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  background-color: #444;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin: 0 5px;
+  border-radius: 4px;
+}
+
+.tabs button.active {
+  background-color: #888;
+}
+
+.tab-content {
+  padding: 20px;
+  background-color: #333;
+  border-radius: 8px;
+}
+
+.search-card {
+  background-color: rgb(36, 36, 36);
+  width: 250px;
+  padding: 16px;
+  margin: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.search-card select {
+  margin-top: 10px;
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  background-color: #555;
+  color: white;
+}
+
+.search-card button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #888;
+  color: white;
+  cursor: pointer;
+}
+
+.search-card button:hover {
+  background-color: #aaa;
+}

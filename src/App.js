@@ -1,47 +1,106 @@
 import React, { useState, useEffect } from 'react';
 import BookForm from './components/BookForm';
 import BookList from './components/BookList';
+import BookGroup from './components/BookGroup';
+import Tabs from './components/Tabs';
 
 const App = () => {
-  const [books, setBooks] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [currentGroup, setCurrentGroup] = useState(null);
   const [error, setError] = useState('');
 
-  const handleDeleteBook = (isbn) => {
-    setBooks(books.filter(book => book.isbn !== isbn));
-  };
-
-  const handleRatingChange = (isbn, newRating) => {
-    setBooks(books.map(book => 
-      book.isbn === isbn ? { ...book, rating: newRating } : book
-    ));
-  };
-
   useEffect(() => {
-    const storedBooks = JSON.parse(localStorage.getItem('books'));
-    if (storedBooks) {
-      setBooks(storedBooks);
+    const storedGroups = JSON.parse(localStorage.getItem('groups'));
+    if (storedGroups) {
+      setGroups(storedGroups);
     }
   }, []);
 
   useEffect(() => {
-    if (books.length > 0) {
-      localStorage.setItem('books', JSON.stringify(books));
-    }
-  }, [books]);
+    localStorage.setItem('groups', JSON.stringify(groups));
+  }, [groups]);
 
-  const addBook = (book) => {
-    if (books.some(b => b.isbn === book.isbn)) {
-      setError('ISBN already exists.');
+  const addGroup = (groupName) => {
+    if (groups.some(group => group.name === groupName)) {
+      setError('Group name already exists.');
       return;
     }
-    setBooks([{ ...book, rating: 0 }, ...books, ]);
+    setGroups([...groups, { name: groupName, books: [] }]);
     setError('');
   };
 
+  const deleteGroup = (groupName) => {
+    setGroups(groups.filter(group => group.name !== groupName));
+    if (currentGroup === groupName) {
+      setCurrentGroup(null);
+    }
+  };
+
+  const addBookToGroup = (book, groupName) => {
+    setGroups(groups.map(group => 
+      group.name === groupName ? { ...group, books: [{ ...book, rating: 0 }, ...group.books] } : group
+    ));
+  };
+
+  const handleDeleteBook = (isbn) => {
+    if (currentGroup) {
+      setGroups(groups.map(group => 
+        group.name === currentGroup ? { ...group, books: group.books.filter(book => book.isbn !== isbn) } : group
+      ));
+    }
+  };
+
+  const handleRatingChange = (isbn, newRating) => {
+    if (currentGroup) {
+      setGroups(groups.map(group => 
+        group.name === currentGroup ? { ...group, books: group.books.map(book => 
+          book.isbn === isbn ? { ...book, rating: newRating } : book
+        ) } : group
+      ));
+    }
+  };
+
+  const handleGroupClick = (groupName) => {
+    setCurrentGroup(groupName);
+  };
+
+  const handleBackToGroups = () => {
+    setCurrentGroup(null);
+  };
+
+  const currentGroupData = groups.find(group => group.name === currentGroup);
+
   return (
     <div>
-      <BookForm addBook={addBook} error={error} />
-      <BookList books={books} onDelete={handleDeleteBook} onRatingChange={handleRatingChange} />
+      <Tabs>
+        <div label="Groups">
+          {currentGroup ? (
+            <>
+              <button onClick={handleBackToGroups}>Back to Groups</button>
+              {currentGroupData && (
+                <BookList books={currentGroupData.books} onDelete={handleDeleteBook} onRatingChange={handleRatingChange} />
+              )}
+            </>
+          ) : (
+            <>
+              <input type="text" placeholder="New Group Name" onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  addGroup(e.target.value);
+                  e.target.value = '';
+                }
+              }} />
+              <div className="group-list">
+                {groups.map(group => (
+                  <BookGroup key={group.name} group={group} onClick={handleGroupClick} onDelete={deleteGroup} />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+        <div label="Search">
+          <BookForm addBook={addBookToGroup} error={error} groups={groups} />
+        </div>
+      </Tabs>
     </div>
   );
 };
