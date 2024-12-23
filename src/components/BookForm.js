@@ -36,14 +36,15 @@ const BookForm = ({ addBook, error }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="form-entry" onSubmit={handleSubmit}>
       <input 
+        className="input-box"
         type="text" 
         value={isbn} 
         onChange={(e) => setIsbn(e.target.value)} 
         placeholder="Enter ISBN"
       />
-      <button type="submit">Add Book</button>
+      <button type="submit" className="input-button">Add Book</button>
       {error && <p>{error}</p>}
     </form>
   );

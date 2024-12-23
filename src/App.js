@@ -10,6 +10,12 @@ const App = () => {
     setBooks(books.filter(book => book.isbn !== isbn));
   };
 
+  const handleRatingChange = (isbn, newRating) => {
+    setBooks(books.map(book => 
+      book.isbn === isbn ? { ...book, rating: newRating } : book
+    ));
+  };
+
   useEffect(() => {
     const storedBooks = JSON.parse(localStorage.getItem('books'));
     if (storedBooks) {
@@ -18,7 +24,9 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('books', JSON.stringify(books));
+    if (books.length > 0) {
+      localStorage.setItem('books', JSON.stringify(books));
+    }
   }, [books]);
 
   const addBook = (book) => {
@@ -26,14 +34,14 @@ const App = () => {
       setError('ISBN already exists.');
       return;
     }
-    setBooks([...books, { ...book, rating: 0 }]);
+    setBooks([{ ...book, rating: 0 }, ...books, ]);
     setError('');
   };
 
   return (
     <div>
       <BookForm addBook={addBook} error={error} />
-      <BookList books={books} onDelete={handleDeleteBook} />
+      <BookList books={books} onDelete={handleDeleteBook} onRatingChange={handleRatingChange} />
     </div>
   );
 };

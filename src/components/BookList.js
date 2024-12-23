@@ -1,11 +1,11 @@
 import React from 'react';
 import Book from './Book';
 
-const BookList = ({ books, onDelete }) => {
+const BookList = ({ books, onDelete, onRatingChange }) => {
   return (
-    <div>
+    <div className="book-list">
       {books.map(book => (
-        <Book key={book.id} book={book} onDelete={onDelete} />
+        <Book key={book.id} book={book} onDelete={onDelete} onRatingChange={onRatingChange} />
       ))}
     </div>
   );
