@@ -1,62 +1,80 @@
-import React, { useState, useEffect } from 'react';
-import BookForm from './components/BookForm';
-import BookList from './components/BookList';
-import BookGroup from './components/BookGroup';
-import Tabs from './components/Tabs';
+import React, { useState, useEffect } from "react";
+import BookForm from "./components/BookForm";
+import BookList from "./components/BookList";
+import BookGroup from "./components/BookGroup";
+import Tabs from "./components/Tabs";
 
 const App = () => {
   const [groups, setGroups] = useState([]);
   const [currentGroup, setCurrentGroup] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const storedGroups = JSON.parse(localStorage.getItem('groups'));
+    const storedGroups = JSON.parse(localStorage.getItem("groups"));
     if (storedGroups) {
       setGroups(storedGroups);
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('groups', JSON.stringify(groups));
+    localStorage.setItem("groups", JSON.stringify(groups));
   }, [groups]);
 
   const addGroup = (groupName) => {
-    if (groups.some(group => group.name === groupName)) {
-      setError('Group name already exists.');
+    if (groups.some((group) => group.name === groupName)) {
+      setError("Group name already exists.");
       return;
     }
     setGroups([...groups, { name: groupName, books: [] }]);
-    setError('');
+    setError("");
   };
 
   const deleteGroup = (groupName) => {
-    setGroups(groups.filter(group => group.name !== groupName));
+    setGroups(groups.filter((group) => group.name !== groupName));
     if (currentGroup === groupName) {
       setCurrentGroup(null);
     }
   };
 
   const addBookToGroup = (book, groupName) => {
-    setGroups(groups.map(group => 
-      group.name === groupName ? { ...group, books: [{ ...book, rating: 0 }, ...group.books] } : group
-    ));
+    setGroups(
+      groups.map((group) =>
+        group.name === groupName
+          ? { ...group, books: [{ ...book, rating: 0 }, ...group.books] }
+          : group
+      )
+    );
   };
 
   const handleDeleteBook = (isbn) => {
     if (currentGroup) {
-      setGroups(groups.map(group => 
-        group.name === currentGroup ? { ...group, books: group.books.filter(book => book.isbn !== isbn) } : group
-      ));
+      setGroups(
+        groups.map((group) =>
+          group.name === currentGroup
+            ? {
+                ...group,
+                books: group.books.filter((book) => book.isbn !== isbn),
+              }
+            : group
+        )
+      );
     }
   };
 
   const handleRatingChange = (isbn, newRating) => {
     if (currentGroup) {
-      setGroups(groups.map(group => 
-        group.name === currentGroup ? { ...group, books: group.books.map(book => 
-          book.isbn === isbn ? { ...book, rating: newRating } : book
-        ) } : group
-      ));
+      setGroups(
+        groups.map((group) =>
+          group.name === currentGroup
+            ? {
+                ...group,
+                books: group.books.map((book) =>
+                  book.isbn === isbn ? { ...book, rating: newRating } : book
+                ),
+              }
+            : group
+        )
+      );
     }
   };
 
@@ -68,7 +86,7 @@ const App = () => {
     setCurrentGroup(null);
   };
 
-  const currentGroupData = groups.find(group => group.name === currentGroup);
+  const currentGroupData = groups.find((group) => group.name === currentGroup);
 
   return (
     <div>
@@ -78,20 +96,33 @@ const App = () => {
             <>
               <button onClick={handleBackToGroups}>Back to Groups</button>
               {currentGroupData && (
-                <BookList books={currentGroupData.books} onDelete={handleDeleteBook} onRatingChange={handleRatingChange} />
+                <BookList
+                  books={currentGroupData.books}
+                  onDelete={handleDeleteBook}
+                  onRatingChange={handleRatingChange}
+                />
               )}
             </>
           ) : (
             <>
-              <input type="text" placeholder="New Group Name" onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  addGroup(e.target.value);
-                  e.target.value = '';
-                }
-              }} />
+              <input
+                type="text"
+                placeholder="New Group Name"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    addGroup(e.target.value);
+                    e.target.value = "";
+                  }
+                }}
+              />
               <div className="group-list">
-                {groups.map(group => (
-                  <BookGroup key={group.name} group={group} onClick={handleGroupClick} onDelete={deleteGroup} />
+                {groups.map((group) => (
+                  <BookGroup
+                    key={group.name}
+                    group={group}
+                    onClick={handleGroupClick}
+                    onDelete={deleteGroup}
+                  />
                 ))}
               </div>
             </>

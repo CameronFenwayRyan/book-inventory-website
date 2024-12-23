@@ -1,39 +1,48 @@
-import React, { useState } from 'react';
-import SearchCard from './SearchCard';
+import React, { useState } from "react";
+import SearchCard from "./SearchCard";
+import axios from "axios";
 
-const getBookDetails = async (isbn) => {
-  const response = await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`);
-  const data = await response.json();
-  const bookData = data[`ISBN:${isbn}`];
+export const getBookDetails = async (query) => {
+  const response = await axios.get(
+    `https://openlibrary.org/search.json?q=${query}`
+  );
+  const data = response.data;
 
-  if (!bookData) {
-    throw new Error('Book not found');
+  if (!data || data.docs.length === 0) {
+    throw new Error("Book not found");
   }
 
-  return {
-    isbn,
+  return data.docs.map((bookData) => ({
+    isbn: bookData.isbn ? bookData.isbn[0] : "Unknown ISBN",
     title: bookData.title,
-    author: bookData.authors ? bookData.authors[0].name : 'Unknown Author',
-    cover: bookData.cover ? { large: bookData.cover.large } : { large: 'default-cover-url.jpg' }
-  };
+    author: bookData.author_name ? bookData.author_name[0] : "Unknown Author",
+    cover: bookData.cover_i
+      ? {
+          large: `https://covers.openlibrary.org/b/id/${bookData.cover_i}-L.jpg`,
+        }
+      : { large: "default-cover-url.jpg" },
+  }));
 };
 
 const BookForm = ({ addBook, error, groups }) => {
-  const [isbn, setIsbn] = useState('');
+  const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const resultsPerPage = 15;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isbn) {
-      alert('ISBN cannot be empty.');
+    if (!query) {
+      alert("Please enter a search query.");
       return;
     }
     try {
-      const book = await getBookDetails(isbn);
-      setSearchResults([book]);
-      setIsbn('');
+      const books = await getBookDetails(query);
+      setSearchResults(books);
+      setQuery("");
+      setCurrentPage(1); // Reset to first page on new search
     } catch (err) {
-      alert('Failed to fetch book data.');
+      alert("Failed to fetch book data.");
     }
   };
 
@@ -42,24 +51,59 @@ const BookForm = ({ addBook, error, groups }) => {
     setSearchResults([]); // Clear search results after adding to group
   };
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const indexOfLastResult = currentPage * resultsPerPage;
+  const indexOfFirstResult = indexOfLastResult - resultsPerPage;
+  const currentResults = searchResults.slice(
+    indexOfFirstResult,
+    indexOfLastResult
+  );
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (
+      let i = 1;
+      i <= Math.ceil(searchResults.length / resultsPerPage);
+      i++
+    ) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers.map((number) => (
+      <button key={number} onClick={() => handlePageChange(number)}>
+        {number}
+      </button>
+    ));
+  };
+
   return (
     <div>
       <form className="form-entry" onSubmit={handleSubmit}>
-        <input 
-          type="text" 
+        <input
+          type="text"
           className="input-box"
-          value={isbn} 
-          onChange={(e) => setIsbn(e.target.value)} 
-          placeholder="Enter ISBN"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Enter ISBN, Title, or Author"
         />
-        <button type="submit" className="input-button">Search</button>
+        <button type="submit" className="input-button">
+          Search
+        </button>
         {error && <p>{error}</p>}
       </form>
       <div className="search-results">
-        {searchResults.map(book => (
-          <SearchCard key={book.isbn} book={book} groups={groups} onAddToGroup={handleAddToGroup} />
+        {currentResults.map((book) => (
+          <SearchCard
+            key={book.isbn}
+            book={book}
+            groups={groups}
+            onAddToGroup={handleAddToGroup}
+          />
         ))}
       </div>
+      <div className="pagination">{renderPageNumbers()}</div>
     </div>
   );
 };
