@@ -9,10 +9,7 @@ const Book = ({ book, onDelete, onRatingChange }) => {
   };
 
   const handleDelete = () => {
-    console.log(`Deleting book with ISBN: ${book.isbn}`);
-    if (typeof onDelete === "function") {
-      onDelete(book.isbn);
-    }
+    onDelete(book.id);
   };
 
   return (
@@ -35,7 +32,9 @@ const Book = ({ book, onDelete, onRatingChange }) => {
           </span>
         ))}
       </div>
-      <button onClick={handleDelete}>Delete</button>
+      <button className="delete-book-button" onClick={handleDelete}>
+        Delete
+      </button>
     </div>
   );
 };

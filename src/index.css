@@ -13,6 +13,9 @@ body {
 
 #root {
   height: 100%;
+  --input-background-color: #333;
+  --button-background-color: #6d6d6d;
+  --card-color: rgb(36, 36, 36);
 }
 
 code {
@@ -46,8 +49,18 @@ code {
   margin-top: 0;
 }
 
+.delete-book-button {
+  background-color: #717171;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
 .book-card {
-  background-color: rgb(36, 36, 36);
+  background-color: var(--card-color);
   width: 250px;
   height: 450px;
   padding: 16px;
@@ -123,7 +136,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .book-group {
-  background-color: rgb(36, 36, 36);
+  background-color: var(--card-color);
   width: 250px;
   padding: 16px;
   margin: 16px;
@@ -150,7 +163,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .delete-group-button {
-  background-color: #ff4d4d;
+  background-color: var(--button-background-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -160,7 +173,11 @@ body::-webkit-scrollbar-thumb {
 }
 
 .delete-group-button:hover {
-  background-color: #ff1a1a;
+  background-color: #ff1a1a81;
+}
+
+.delete-book-button:hover {
+  background-color: #ff1a1a81;
 }
 
 .tabs {

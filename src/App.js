@@ -3,6 +3,7 @@ import BookForm from "./components/BookForm";
 import BookList from "./components/BookList";
 import BookGroup from "./components/BookGroup";
 import Tabs from "./components/Tabs";
+import { v4 as uuidv4 } from "uuid";
 
 const App = () => {
   const [groups, setGroups] = useState([]);
@@ -39,24 +40,22 @@ const App = () => {
   };
 
   const addBookToGroup = (book, groupName) => {
+    const bookWithId = { ...book, id: uuidv4() }; // Add unique identifier
     setGroups(
       groups.map((group) =>
         group.name === groupName
-          ? { ...group, books: [{ ...book, rating: 0 }, ...group.books] }
+          ? { ...group, books: [bookWithId, ...group.books] }
           : group
       )
     );
   };
 
-  const handleDeleteBook = (isbn) => {
+  const handleDeleteBook = (id) => {
     if (currentGroup) {
       setGroups(
         groups.map((group) =>
           group.name === currentGroup
-            ? {
-                ...group,
-                books: group.books.filter((book) => book.isbn !== isbn),
-              }
+            ? { ...group, books: group.books.filter((book) => book.id !== id) }
             : group
         )
       );

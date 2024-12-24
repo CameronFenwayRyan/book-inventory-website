@@ -50,6 +50,7 @@ const BookForm = ({ addBook, error, groups }) => {
       i <= Math.ceil(searchResults.length / resultsPerPage);
       i++
     ) {
+      console.log(i);
       pageNumbers.push(i);
     }
     return pageNumbers.map((number) => (
@@ -79,8 +80,8 @@ const BookForm = ({ addBook, error, groups }) => {
       ) : (
         <>
           <div className="search-results">
-            {currentResults.map((book) => (
-              <div key={book.isbn}>
+            {currentResults.map((book, index) => (
+              <div className="search-card" key={`${book.isbn}-${index}`}>
                 <SearchCard
                   book={book}
                   groups={groups}
