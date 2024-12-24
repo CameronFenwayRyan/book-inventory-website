@@ -1,32 +1,23 @@
-import React, { useState } from 'react';
+import React from "react";
 
-const Tabs = ({ children }) => {
-  const [activeTab, setActiveTab] = useState(children[0].props.label);
-
-  const handleTabClick = (label) => {
-    setActiveTab(label);
-  };
-
+const Tabs = ({ children, activeTab, setActiveTab }) => {
   return (
     <div>
-      <div className="tabs">
-        {children.map((child) => (
+      <div className="tab-buttons">
+        {React.Children.map(children, (child) => (
           <button
-            key={child.props.label}
-            className={child.props.label === activeTab ? 'active' : ''}
-            onClick={() => handleTabClick(child.props.label)}
+            key={child.props.tabKey}
+            className={activeTab === child.props.tabKey ? "active" : ""}
+            onClick={() => setActiveTab(child.props.tabKey)}
           >
             {child.props.label}
           </button>
         ))}
       </div>
       <div className="tab-content">
-        {children.map((child) => {
-          if (child.props.label === activeTab) {
-            return <div key={child.props.label}>{child.props.children}</div>;
-          }
-          return null;
-        })}
+        {React.Children.map(children, (child) =>
+          activeTab === child.props.tabKey ? child : null
+        )}
       </div>
     </div>
   );

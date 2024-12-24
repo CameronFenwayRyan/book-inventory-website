@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import SearchCard from "./SearchCard";
 import { getBookDetails } from "../services/openLibraryAPI";
+import "../index.css"; // Import the CSS file
 
-const BookForm = ({ addBook, error, groups }) => {
+const BookForm = ({ addBook, error, groups, onBookClick }) => {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,7 +18,7 @@ const BookForm = ({ addBook, error, groups }) => {
     }
     setLoading(true);
     try {
-      const books = (await getBookDetails(query)) || [];
+      const books = await getBookDetails(query);
       setSearchResults(books);
       setQuery("");
       setCurrentPage(1); // Reset to first page on new search
@@ -28,20 +29,16 @@ const BookForm = ({ addBook, error, groups }) => {
     }
   };
 
-  const handleAddToGroup = (book, groupName) => {
-    addBook(book, groupName);
-    // Do not clear search results after adding to group
-  };
-
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
   const indexOfLastResult = currentPage * resultsPerPage;
   const indexOfFirstResult = indexOfLastResult - resultsPerPage;
-  const currentResults = Array.isArray(searchResults)
-    ? searchResults.slice(indexOfFirstResult, indexOfLastResult)
-    : [];
+  const currentResults = searchResults.slice(
+    indexOfFirstResult,
+    indexOfLastResult
+  );
 
   const renderPageNumbers = () => {
     const pageNumbers = [];
@@ -50,7 +47,6 @@ const BookForm = ({ addBook, error, groups }) => {
       i <= Math.ceil(searchResults.length / resultsPerPage);
       i++
     ) {
-      console.log(i);
       pageNumbers.push(i);
     }
     return pageNumbers.map((number) => (
@@ -81,13 +77,13 @@ const BookForm = ({ addBook, error, groups }) => {
         <>
           <div className="search-results">
             {currentResults.map((book, index) => (
-              <div className="search-card" key={`${book.isbn}-${index}`}>
-                <SearchCard
-                  book={book}
-                  groups={groups}
-                  onAddToGroup={handleAddToGroup}
-                />
-              </div>
+              <SearchCard
+                key={`${book.isbn}-${index}`}
+                book={book}
+                groups={groups}
+                onAddToGroup={addBook}
+                onClick={() => onBookClick(book)}
+              />
             ))}
           </div>
           <div className="pagination">{renderPageNumbers()}</div>
