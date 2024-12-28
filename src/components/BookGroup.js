@@ -1,9 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const BookGroup = ({ groups, onBookClick, onDelete }) => {
+const BookGroup = ({
+  groups,
+  onBookClick,
+  onDelete,
+  addGroup,
+  deleteGroup,
+}) => {
   const [activeGroup, setActiveGroup] = useState(groups[0].name);
   const [selectedBook, setSelectedBook] = useState(null);
   const [comment, setComment] = useState("");
+  const [newGroupName, setNewGroupName] = useState("");
+
+  useEffect(() => {
+    if (
+      groups.length > 0 &&
+      !groups.find((group) => group.name === activeGroup)
+    ) {
+      setActiveGroup(groups[0].name);
+    }
+  }, [groups, activeGroup]);
 
   const handleGroupChange = (groupName) => {
     setActiveGroup(groupName);
@@ -27,11 +43,34 @@ const BookGroup = ({ groups, onBookClick, onDelete }) => {
     }
   };
 
+  const handleAddGroup = () => {
+    if (newGroupName.trim() !== "") {
+      addGroup(newGroupName);
+      setNewGroupName("");
+    }
+  };
+
+  const handleDeleteGroup = (groupName) => {
+    deleteGroup(groupName);
+    if (activeGroup === groupName) {
+      setActiveGroup(groups[0]?.name || "");
+    }
+  };
+
   const activeGroupBooks =
     groups.find((group) => group.name === activeGroup)?.books || [];
 
   return (
     <div className="book-group-container">
+      <div className="add-group">
+        <input
+          type="text"
+          value={newGroupName}
+          onChange={(e) => setNewGroupName(e.target.value)}
+          placeholder="New Group Name"
+        />
+        <button onClick={handleAddGroup}>Add Group</button>
+      </div>
       <div className="group-menu">
         {groups.map((group) => (
           <button
@@ -61,7 +100,7 @@ const BookGroup = ({ groups, onBookClick, onDelete }) => {
                   onDelete(book.id, activeGroup);
                 }}
               >
-                Delete Group
+                Remove Book
               </button>
             </div>
           ))}
@@ -72,12 +111,25 @@ const BookGroup = ({ groups, onBookClick, onDelete }) => {
             <textarea
               value={comment}
               onChange={handleCommentChange}
-              placeholder="Add a comment..."
+              placeholder="Leave a review..."
             />
             <button onClick={handleSaveComment}>Save Comment</button>
           </div>
         )}
+        <div className="delete-group"></div>
       </div>
+      <button
+        onClick={() => {
+          const confirmDelete = window.confirm(
+            `Are you sure you want to delete the group "${activeGroup}"?`
+          );
+          if (confirmDelete) {
+            handleDeleteGroup(activeGroup);
+          }
+        }}
+      >
+        Delete Group
+      </button>
     </div>
   );
 };

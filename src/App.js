@@ -40,9 +40,27 @@ const App = () => {
     localStorage.setItem("groups", JSON.stringify(updatedGroups));
   };
 
+  const handleAddGroup = (groupName) => {
+    const newGroup = { name: groupName, books: [] };
+    const updatedGroups = [...groups, newGroup];
+    setGroups(updatedGroups);
+    localStorage.setItem("groups", JSON.stringify(updatedGroups));
+  };
+
+  const handleDeleteGroup = (groupName) => {
+    console.log("Delete group:", groupName);
+    const updatedGroups = groups.filter((group) => group.name !== groupName);
+    setGroups(updatedGroups);
+    localStorage.setItem("groups", JSON.stringify(updatedGroups));
+  };
+
   return (
     <SearchProvider>
-      <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
+      <Tabs
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        addGroup={handleAddGroup}
+      >
         <div label="Search" tabKey="search">
           <BookForm
             onBookClick={handleBookClick}
@@ -55,6 +73,8 @@ const App = () => {
             onBookClick={handleBookClick}
             groups={groups}
             onDelete={handleDeleteBook}
+            addGroup={handleAddGroup}
+            deleteGroup={handleDeleteGroup}
           />
         </div>
       </Tabs>

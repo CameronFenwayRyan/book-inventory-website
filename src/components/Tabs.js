@@ -1,6 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 
-const Tabs = ({ children, activeTab, setActiveTab }) => {
+const Tabs = ({ children, activeTab, setActiveTab, addGroup }) => {
+  const [newGroupName, setNewGroupName] = useState("");
+
+  const handleAddGroup = () => {
+    if (newGroupName.trim() !== "") {
+      addGroup(newGroupName);
+      setNewGroupName("");
+    }
+  };
+
   return (
     <div>
       <div className="tab-buttons">
