@@ -1,15 +1,11 @@
 import React, { useState } from "react";
 
-const Book = ({ book, onDelete, onRatingChange }) => {
+const Book = ({ book, onRatingChange }) => {
   const [rating, setRating] = useState(book.rating || 1);
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);
     onRatingChange(book.isbn, newRating);
-  };
-
-  const handleDelete = () => {
-    onDelete(book.id);
   };
 
   return (

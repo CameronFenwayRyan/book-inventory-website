@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const BookGroup = ({ groups, onBookClick }) => {
+const BookGroup = ({ groups, onBookClick, onDelete }) => {
   const [activeGroup, setActiveGroup] = useState(groups[0].name);
   const [selectedBook, setSelectedBook] = useState(null);
   const [comment, setComment] = useState("");
@@ -54,6 +54,15 @@ const BookGroup = ({ groups, onBookClick }) => {
               <img src={book.cover.large} alt={book.title} />
               <h3>{book.title}</h3>
               <p>{book.author}</p>
+              <button
+                className="delete-group-button"
+                onClick={(e) => {
+                  e.stopPropagation(); // Stop the event from bubbling up to the parent div
+                  onDelete(book.id, activeGroup);
+                }}
+              >
+                Delete Group
+              </button>
             </div>
           ))}
         </div>

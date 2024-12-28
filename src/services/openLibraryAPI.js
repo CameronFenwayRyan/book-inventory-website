@@ -1,4 +1,5 @@
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 
 export const getBookDetails = async (query) => {
   const response = await axios.get(
@@ -12,42 +13,35 @@ export const getBookDetails = async (query) => {
 
   const lowerCaseQuery = query.toLowerCase();
 
-  // Filter results by title
+  // Filter by title
   let filteredBooks = data.docs.filter((bookData) =>
-    bookData.title.toLowerCase().includes(lowerCaseQuery)
+    bookData.title?.toLowerCase().includes(lowerCaseQuery)
   );
 
-  // If no results found by title, filter by author's first name
-  if (filteredBooks.length === 0) {
-    filteredBooks = data.docs.filter(
-      (bookData) =>
-        bookData.author_name &&
-        bookData.author_name[0].split(" ")[0].toLowerCase() === lowerCaseQuery
-    );
-  }
+  // Filter by author name and add to filteredBooks
+  const authorMatches = data.docs.filter((bookData) =>
+    bookData.author_name?.some((author) =>
+      author.toLowerCase().includes(lowerCaseQuery)
+    )
+  );
+  filteredBooks = filteredBooks.concat(authorMatches);
 
-  // If no results found by author's first name, filter by author's last name
-  if (filteredBooks.length === 0) {
-    filteredBooks = data.docs.filter(
-      (bookData) =>
-        bookData.author_name &&
-        bookData.author_name[0].split(" ").slice(-1)[0].toLowerCase() ===
-          lowerCaseQuery
-    );
-  }
+  // Filter by subject and add to filteredBooks
+  const subjectMatches = data.docs.filter((bookData) =>
+    bookData.subject?.some((subject) =>
+      subject.toLowerCase().includes(lowerCaseQuery)
+    )
+  );
+  filteredBooks = filteredBooks.concat(subjectMatches);
 
-  // If no results found by author's last name, filter by keyword
-  if (filteredBooks.length === 0) {
-    filteredBooks = data.docs.filter(
-      (bookData) =>
-        bookData.subject &&
-        bookData.subject.some((subject) =>
-          subject.toLowerCase().includes(lowerCaseQuery)
-        )
-    );
-  }
+  // If no matches, filter by ISBN
+  const ibsnMatches = data.docs.filter((bookData) =>
+    bookData.isbn?.some((isbn) => isbn === lowerCaseQuery)
+  );
+  filteredBooks = filteredBooks.concat(ibsnMatches);
 
   return filteredBooks.map((bookData) => ({
+    id: uuidv4(),
     isbn: bookData.isbn ? bookData.isbn[0] : "Unknown ISBN",
     title: bookData.title,
     author: bookData.author_name ? bookData.author_name[0] : "Unknown Author",
