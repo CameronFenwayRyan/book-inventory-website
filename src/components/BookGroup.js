@@ -6,11 +6,13 @@ const BookGroup = ({
   onDelete,
   addGroup,
   deleteGroup,
+  saveComment,
 }) => {
   const [activeGroup, setActiveGroup] = useState(groups[0].name);
   const [selectedBook, setSelectedBook] = useState(null);
   const [comment, setComment] = useState("");
   const [newGroupName, setNewGroupName] = useState("");
+  const [savedMessage, setSavedMessage] = useState("");
 
   useEffect(() => {
     if (
@@ -33,13 +35,15 @@ const BookGroup = ({
 
   const handleCommentChange = (e) => {
     setComment(e.target.value);
+    setSavedMessage("");
   };
 
   const handleSaveComment = () => {
-    // Save the comment to the book object or send it to the server
     if (selectedBook) {
-      selectedBook.comment = comment;
+      saveComment(selectedBook.id, activeGroup, comment);
       setSelectedBook({ ...selectedBook });
+      const currentDateTime = new Date().toLocaleString();
+      setSavedMessage(`Saved on ${currentDateTime}`);
     }
   };
 
@@ -114,6 +118,7 @@ const BookGroup = ({
               placeholder="Leave a review..."
             />
             <button onClick={handleSaveComment}>Save Comment</button>
+            {savedMessage && <p className="saved-message">{savedMessage}</p>}
           </div>
         )}
         <div className="delete-group"></div>

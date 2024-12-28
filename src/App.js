@@ -10,7 +10,6 @@ const App = () => {
   const [groups, setGroups] = useState([]);
 
   useEffect(() => {
-    // Load groups from local storage or API
     const storedGroups = JSON.parse(localStorage.getItem("groups")) || [];
     setGroups(storedGroups);
   }, []);
@@ -54,6 +53,21 @@ const App = () => {
     localStorage.setItem("groups", JSON.stringify(updatedGroups));
   };
 
+  const handleSaveComment = (bookId, groupName, comment) => {
+    const updatedGroups = groups.map((group) =>
+      group.name === groupName
+        ? {
+            ...group,
+            books: group.books.map((book) =>
+              book.id === bookId ? { ...book, comment } : book
+            ),
+          }
+        : group
+    );
+    setGroups(updatedGroups);
+    localStorage.setItem("groups", JSON.stringify(updatedGroups));
+  };
+
   return (
     <SearchProvider>
       <Tabs
@@ -61,13 +75,6 @@ const App = () => {
         setActiveTab={setActiveTab}
         addGroup={handleAddGroup}
       >
-        <div label="Search" tabKey="search">
-          <BookForm
-            onBookClick={handleBookClick}
-            addBook={addBookToGroup}
-            groups={groups}
-          />
-        </div>
         <div label="Groups" tabKey="groups">
           <BookGroup
             onBookClick={handleBookClick}
@@ -75,6 +82,14 @@ const App = () => {
             onDelete={handleDeleteBook}
             addGroup={handleAddGroup}
             deleteGroup={handleDeleteGroup}
+            saveComment={handleSaveComment}
+          />
+        </div>
+        <div label="Search" tabKey="search">
+          <BookForm
+            onBookClick={handleBookClick}
+            addBook={addBookToGroup}
+            groups={groups}
           />
         </div>
       </Tabs>

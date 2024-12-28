@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const SearchCard = ({ book, groups, onAddToGroup, onClick }) => {
+const SearchCard = ({ book, groups, onAddToGroup }) => {
   const [selectedGroup, setSelectedGroup] = useState("");
 
   const handleAddToGroup = () => {
@@ -13,7 +13,7 @@ const SearchCard = ({ book, groups, onAddToGroup, onClick }) => {
   const defaultCover = "/default-cover.jpg"; // Replace with the actual path to your default cover image
 
   return (
-    <div className="search-card" onClick={onClick}>
+    <div className="search-card">
       <h3 className="book-title">{book.title}</h3>
       <p className="book-author">Author: {book.author}</p>
       <img
