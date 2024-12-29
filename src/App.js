@@ -11,6 +11,9 @@ const App = () => {
 
   useEffect(() => {
     const storedGroups = JSON.parse(localStorage.getItem("groups")) || [];
+    if (storedGroups.length === 0) {
+      storedGroups.push({ name: "Good Reads", books: [] });
+    }
     setGroups(storedGroups);
   }, []);
 

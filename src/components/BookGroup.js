@@ -19,7 +19,7 @@ const BookGroup = ({
       groups.length > 0 &&
       !groups.find((group) => group.name === activeGroup)
     ) {
-      setActiveGroup(groups[0].name);
+      setActiveGroup(groups[0]?.name || "");
     }
   }, [groups, activeGroup]);
 
@@ -29,8 +29,13 @@ const BookGroup = ({
   };
 
   const handleBookClick = (book) => {
-    setSelectedBook(book);
-    setComment(book.comment || "");
+    if (selectedBook && selectedBook.id === book.id) {
+      setSelectedBook(null);
+      setComment("");
+    } else {
+      setSelectedBook(book);
+      setComment(book.comment || "");
+    }
   };
 
   const handleCommentChange = (e) => {
@@ -55,6 +60,10 @@ const BookGroup = ({
   };
 
   const handleDeleteGroup = (groupName) => {
+    if (groups.length <= 1) {
+      alert("You cannot delete the only group.");
+      return;
+    }
     deleteGroup(groupName);
     if (activeGroup === groupName) {
       setActiveGroup(groups[0]?.name || "");
