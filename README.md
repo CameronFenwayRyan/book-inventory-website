@@ -19,9 +19,37 @@ The **Book Inventory Website** is a React-based application designed to help use
   Book groups and reviews are saved locally, ensuring a smooth and persistent user experience.  
 
 ## Project Structure 
-book-inventory-website/ ├── .gitignore ├── .vscode/ │ └── extensions.json ├── public/ │ ├── index.html │ ├── manifest.json │ └── robots.txt ├── src/ │ ├── components/ │ │ ├── Book.js # Component to display book details │ │ ├── BookDetail.js # Detailed view for a specific book │ │ ├── BookForm.js # Form for adding/editing books │ │ ├── BookGroup.js # Component to manage book groups │ │ ├── BookList.js # List of books in a group │ │ ├── SearchCard.js # Search result card │ │ └── Tabs.js # Tab navigation │ ├── App.css # Global CSS styles │ ├── App.js # Main application component │ ├── App.test.js # Unit tests for the app │ ├── index.css # Base CSS styles │ ├── index.js # Application entry point │ ├── reportWebVitals.js # Performance monitoring │ ├── SearchContext.js # Context API for managing search state │ ├── services/ │ │ └── openLibraryAPI.js # API integration with Open Library │ └── setupTests.js # Test setup configuration ├── package.json # Project dependencies and scripts └── README.md # Project documentation
+book-inventory-website/
+├── .gitignore
+├── .vscode/
+│   └── extensions.json
+├── public/
+│   ├── index.html
+│   ├── manifest.json
+│   └── robots.txt
+├── src/
+│   ├── components/
+│   │   ├── Book.js
+│   │   ├── BookDetail.js
+│   │   ├── BookForm.js
+│   │   ├── BookGroup.js
+│   │   ├── BookList.js
+│   │   ├── SearchCard.js
+│   │   └── Tabs.js
+│   ├── App.css
+│   ├── App.js
+│   ├── App.test.js
+│   ├── index.css
+│   ├── index.js
+│   ├── reportWebVitals.js
+│   ├── SearchContext.js
+│   ├── services/
+│   │   └── openLibraryAPI.js
+│   └── setupTests.js
+├── package.json
+└── README.md
 
 ## Technologies Used
-**React***: Frontend framework
+**React**: Frontend framework
 **Open Library API**: Book search functionality
 **Local Storage**: Persistent data saving
