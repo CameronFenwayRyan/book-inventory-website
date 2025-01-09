@@ -54,4 +54,8 @@ book-inventory-website/
 ## Technologies Used
 - **React**: Frontend framework
 - **Open Library API**: Book search functionality
+<<<<<<< HEAD
 - **Local Storage**: Persistent data saving
+=======
+- **Local Storage**: Persistent data saving
+>>>>>>> bd0c36d1eb8ca447d0330f487b5b48f94e1770de
