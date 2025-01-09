@@ -50,6 +50,6 @@ book-inventory-website/
 └── README.md
 
 ## Technologies Used
-**React**: Frontend framework
-**Open Library API**: Book search functionality
-**Local Storage**: Persistent data saving
+- **React**: Frontend framework
+- **Open Library API**: Book search functionality
+- **Local Storage**: Persistent data saving
