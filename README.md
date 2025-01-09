@@ -19,6 +19,7 @@ The **Book Inventory Website** is a React-based application designed to help use
   Book groups and reviews are saved locally, ensuring a smooth and persistent user experience.  
 
 ## Project Structure 
+```
 book-inventory-website/
 ├── .gitignore
 ├── .vscode/
@@ -48,6 +49,7 @@ book-inventory-website/
 │   └── setupTests.js
 ├── package.json
 └── README.md
+```
 
 ## Technologies Used
 - **React**: Frontend framework
